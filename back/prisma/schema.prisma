@@ -14,35 +14,34 @@ datasource db {
 }
 
 model User {
-  id        Int      @id
-  user      String
+  id        Int      @id @default(autoincrement())
   password  String
   name      String
-  sex       String
-  telephone Int
-  email     String
-  createdAt DateTime
-  updatedAt DateTime @db.Date
+  sex       String?
+  telephone Int?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   Logger    Logger[]
   Role      Role     @relation(fields: [roleId], references: [id])
   roleId    Int
 }
 
 model Role {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   name      String
-  content   String
-  remark    String
-  createdAt DateTime
-  updatedAt DateTime @db.Date
+  content   String?
+  remark    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   User      User[]
 }
 
 model Logger {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  controls  String
-  remark    String
-  createdAt DateTime
+  controls  String?
+  remark    String?
+  createdAt DateTime @default(now())
 }
