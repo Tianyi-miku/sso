@@ -1,0 +1,54 @@
+version: '3'  
+services:  
+  nestjs:  
+    build:  
+      context: .  
+      dockerfile: Dockerfile.nestjs  
+    ports:  
+      - "3000:3000"  
+    depends_on:  
+      - mysql  
+      - redis  
+    environment:  
+      - MYSQL_HOST=mysql  
+      - MYSQL_PORT=3306  
+      - MYSQL_USER=youruser  
+      - MYSQL_PASSWORD=yourpassword  
+      - MYSQL_DATABASE=yourdatabase  
+      - REDIS_HOST=redis  
+      - REDIS_PORT=6379  
+  
+  vue:  
+    build:  
+      context: .  
+      dockerfile: Dockerfile.vue  
+    ports:  
+      - "8080:80"  
+    depends_on:  
+      - nestjs  
+  
+  mysql:  
+    image: mysql:8.0  
+    ports:  
+      - "3306:3306"  
+    environment:  
+      - MYSQL_ROOT_PASSWORD=yourrootpassword  
+      - MYSQL_DATABASE=yourdatabase  
+      - MYSQL_USER=youruser  
+      - MYSQL_PASSWORD=yourpassword  
+    volumes:  
+      - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql  
+  
+  redis:  
+    image: redis:alpine  
+    ports:  
+      - "6379:6379"  
+  
+  nginx:  
+    image: nginx:alpine  
+    ports:  
+      - "80:80"  
+    volumes:  
+      - ./nginx.conf:/etc/nginx/nginx.conf  
+    depends_on:  
+      - vue

@@ -20,6 +20,8 @@ import { CacheService } from './redis/cache.serve';
 import { ClientModule } from './client/client.module';
 import { LoginloggerModule } from './loginlogger/loginlogger.module';
 import { LoginloggerService } from './loginlogger/loginlogger.service';
+import { CryptoService } from './auth/cryptoService';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [LoginModule, UserModule,
@@ -47,7 +49,9 @@ import { LoginloggerService } from './loginlogger/loginlogger.service';
     },
     LoggerService,
     CacheService,
-    LoginloggerService
+    LoginloggerService,
+    CryptoService,
+    ConfigService
   ],
 })
 export class AppModule { }

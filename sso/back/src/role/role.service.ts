@@ -44,4 +44,15 @@ export class RoleService {
       },
     })
   }
+
+  async createDefult() {
+    return await prisma.role.create({
+      data: {
+        id: 1,
+        name: '管理员',
+        content: '内容',
+        remark: '备注',
+      },
+    })
+  }
 }

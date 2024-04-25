@@ -58,7 +58,6 @@ const form = reactive({
   username: '123',
   password: '123',
   repetPassword: '123',
-  clientCode: 0,
   roleId: 1
 })
 
