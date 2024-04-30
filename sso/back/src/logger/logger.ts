@@ -22,6 +22,7 @@ export class LoggingInterceptor implements NestInterceptor {
     if ((!url.includes('/logger') || !url.includes('/loginout')) && user?.id) {
       const log: any = {
         userId: user.id,
+        username: user.username,
         controls: `Method: ${method}, URL: ${url}`,
       }
       await this.loggerservice.setLog(log)

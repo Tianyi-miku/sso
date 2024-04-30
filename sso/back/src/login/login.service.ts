@@ -31,6 +31,7 @@ export class LoginService {
     if (Iuser) {
       let log: any = {
         userId: Iuser.id,
+        username: Iuser.username,
         controls: `登录失败`,
       }
       const Crpassword = await this.cryptoService.checkPassword(user.password, Iuser.password)
@@ -60,6 +61,7 @@ export class LoginService {
     }
     let { repetPassword, ...data } = param
     data.password = await this.cryptoService.careatePassword(data.password)
+    data.telephone = Number(data.telephone)
 
     let IRole = await prisma.role.findUnique({
       where: {
@@ -69,7 +71,7 @@ export class LoginService {
     if (!IRole) {
       await this.roleService.createDefult()
     }
-    
+
 
     await prisma.user.create({ data: data })
     const users = await prisma.user.findMany()
@@ -77,9 +79,10 @@ export class LoginService {
   }
 
 
-  async loginout(id: number, token: string) {
+  async loginout(user: User, token: string) {
     let log: any = {
-      userId: id,
+      userId: user.id,
+      username: user.username,
       controls: `退出成功`,
     }
     await this.LoginloggerService.setloginLog(log)

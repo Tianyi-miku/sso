@@ -30,7 +30,7 @@ export class LoginController {
 
   @Get('/loginout')
   loginOut(@Req() param: any) {
-    return this.loginService.loginout(param.user.id, param)
+    return this.loginService.loginout(param.user, param)
   }
 
   @Public()

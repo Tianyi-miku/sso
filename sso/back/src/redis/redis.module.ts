@@ -9,8 +9,8 @@ import * as Redis from 'ioredis'
         //@ts-expect-error
         return new Redis({
           // Redis服务器配置
-          host: 'localhost',
-          port: 6379
+          host: process.env.Redis_URL,
+          port: process.env.Redis_HOST
           // 其他选项...
         })
       }
