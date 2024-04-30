@@ -1,32 +1,30 @@
 <template>
   <el-dialog v-model="visible" :title="props.title" width="500" @close="onClose">
-    <el-form :model="Iform">
-      <el-form-item label="用户名称" :label-width="formLabelWidth">
+    <el-form :model="Iform" :rules="rules">
+      <el-form-item label="用户名称" :label-width="formLabelWidth" prop="username">
         <el-input v-model="Iform.username" autocomplete="off" />
       </el-form-item>
-    <el-form-item label="性别" :label-width="formLabelWidth">
-      <el-select v-model="Iform.sex" placeholder="请选择性别">
-        <el-option label="男" value="男" />
-        <el-option label="女" value="女" />
-      </el-select>
-    </el-form-item>
-    <el-form-item label="角色" :label-width="formLabelWidth">
-      <el-select v-model="Iform.roleId" placeholder="请选择角色">
-        <el-option
-        v-for="item in roleList"
-        :key="item.id"
-        :label="item.name"
-        :value="item.id"
-      />
-      </el-select>
-    </el-form-item>
+      <el-form-item label="性别" :label-width="formLabelWidth">
+        <el-select v-model="Iform.sex" placeholder="请选择性别">
+          <el-option label="男" value="男" />
+          <el-option label="女" value="女" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="角色" :label-width="formLabelWidth" required>
+        <el-select v-model="Iform.roleId" placeholder="请选择角色">
+          <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="电话" :label-width="formLabelWidth">
+        <el-input v-model="Iform.telephone" autocomplete="off" />
+      </el-form-item>
       <el-form-item label="email" :label-width="formLabelWidth">
         <el-input v-model="Iform.email" autocomplete="off" />
       </el-form-item>
-      <el-form-item v-if="props.title==='新增'" label="密码" :label-width="formLabelWidth">
+      <el-form-item v-if="props.title === '新增'" label="密码" :label-width="formLabelWidth" prop="password">
         <el-input v-model="Iform.password" autocomplete="off" />
       </el-form-item>
-      <el-form-item v-if="props.title==='新增'" label="重复输入密码" :label-width="formLabelWidth">
+      <el-form-item v-if="props.title === '新增'" label="重复输入密码" :label-width="formLabelWidth"  prop="repetPassword">
         <el-input v-model="Iform.repetPassword" autocomplete="off" />
       </el-form-item>
     </el-form>
@@ -43,7 +41,7 @@
 <script lang="ts" setup>
 import { register } from '@/api/login'
 import { update } from '@/api/user'
-import { reactive,onMounted, ref, watch, watchEffect } from "vue";
+import { reactive, onMounted, ref, watch, watchEffect } from "vue";
 import { ElNotification } from "element-plus";
 import { getlist } from "@/api/role"
 
@@ -66,6 +64,19 @@ const props = defineProps({
       return function () { }
     }
   }
+})
+
+const rules = reactive({
+  username: [
+    { required: true, message: '请输入账号', trigger: 'blur' },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, message: '密码长度需要超过6位', trigger: 'blur' },
+  ],
+  repetPassword: [
+    { required: true, message: '请再次输入密码', trigger: 'blur' },
+  ],
 })
 
 let Iform = ref<any>({})
@@ -126,7 +137,7 @@ const queryParams = reactive({
 let roleList = reactive<any>([])
 
 onMounted(() => {
-  getlist(queryParams).then((result:any) => {
+  getlist(queryParams).then((result: any) => {
     roleList = result.list
   }).catch((err) => {
     console.log(err);

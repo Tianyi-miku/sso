@@ -17,8 +17,9 @@
 
   <el-table :data="table.tableData" style="width: 100%">
     <el-table-column prop="username" label="姓名" width="180" />
-    <el-table-column prop="sex" label="sex" width="180" />
+    <el-table-column prop="sex" label="性别" width="180" />
     <el-table-column prop="email" label="email" />
+    <el-table-column prop="telephone" label="电话" />
     <el-table-column prop="createdAt" label="创建日期">
       <template #default="scope">
         <span style="margin-left: 10px">{{ dayjs(scope.row.createdAt).format('YYYY-MM-DD HH:mm:ss') }}</span>

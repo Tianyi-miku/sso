@@ -13,7 +13,7 @@
   </div>
 
   <el-table :data="table.tableData" class="table">
-    <el-table-column prop="user.username" label="用户" width="180" />
+    <el-table-column prop="username" label="用户" width="180" />
     <el-table-column prop="user.Role.name" label="权限" width="180" />
     <el-table-column prop="controls" label="操作" />
     <el-table-column prop="createdAt" label="日期">

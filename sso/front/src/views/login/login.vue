@@ -1,9 +1,10 @@
 <template>
   <div class="login-box">
     <div class="login">
-      <div class="login_title">Login</div>
-      <div class="login_title">统一认证中心</div>
-      <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="auto" style="max-width: 600px">
+      <div class="login_title">SSO</div>
+      <div class="login_title">统一身份认证中心</div>
+      <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="auto" style="max-width: 600px"
+        v-if="!isForgetPassword">
         <el-form-item label="" prop="username">
           <el-input v-model="form.username" placeholder="请输入账号">
             <template #prefix>
@@ -14,7 +15,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="" prop="password">
-          <el-input v-model="form.password" placeholder="请输入密码">
+          <el-input v-model="form.password" placeholder="请输入密码" show-password>
             <template #prefix>
               <el-icon class="el-input__icon">
                 <Lock />
@@ -23,7 +24,7 @@
           </el-input>
         </el-form-item>
         <el-form-item v-show="!isLogin" label="" prop="repetPassword">
-          <el-input v-model="form.repetPassword">
+          <el-input v-model="form.repetPassword" show-password>
             <template #prefix>
               <el-icon class="el-input__icon">
                 <Lock />
@@ -32,12 +33,48 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button class="button" type="primary" @click="onSubmit(ruleFormRef)">{{ isLogin ? 'Login' : 'Register'
+          <el-button class="button" type="primary" @click="onSubmit(ruleFormRef)">{{ isLogin ? '登录' : '注册'
             }}</el-button>
         </el-form-item>
+
+
         <div class="reg">
-          <span class="reginOrlogin" v-show="isLogin" @click="isLogin = !isLogin">注册</span>
-          <span class="reginOrlogin" v-show="!isLogin" @click="isLogin = !isLogin">登录</span>
+          <span class="forgetPassword" v-show="!isLogin" @click="() => { isLogin = !isLogin }">登录</span>
+          <span class="forgetPassword" v-show="isLogin" @click="() => { isLogin = !isLogin }">注册</span>
+
+          <div class="forgetPassword">
+            <span v-show="!isForgetPassword && isLogin" @click="isForgetPassword = !isForgetPassword">忘记密码</span>
+          </div>
+        </div>
+      </el-form>
+
+      <el-form :model="textform" label-width="auto" style="max-width: 600px" v-if="isForgetPassword">
+        <el-form-item label="" prop="username">
+          <el-input v-model="textform.phone" placeholder="请输入手机号">
+            <template #prefix>
+              <el-icon class="el-input__icon">
+                <UserFilled />
+              </el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="" prop="password">
+          <el-input v-model="textform.password" placeholder="请输入验证码">
+            <template #prefix>
+              <el-icon class="el-input__icon">
+                <Lock />
+              </el-icon>
+            </template>
+            <template #append>
+              <span class="appendButton" @click="send">发送{{ !isSend ? '' : `(${Localtime})` }}</span>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button class="button" type="primary">登录</el-button>
+        </el-form-item>
+        <div class=" forgetPassword">
+          <span v-show="isForgetPassword" @click="isForgetPassword = !isForgetPassword">密码登录</span>
         </div>
       </el-form>
     </div>
@@ -56,12 +93,22 @@ const ruleFormRef = ref()
 
 const form = reactive({
   username: '123',
-  password: '123',
-  repetPassword: '123',
-  roleId: 1
+  password: '123456',
+  repetPassword: '123456',
+  roleId: 1,
+  telephone: ''
 })
 
+const textform = reactive({
+  phone: '',
+  password: '',
+})
+
+
 const isLogin = ref(true)
+const isForgetPassword = ref(false)
+const Localtime = ref(60)
+const isSend = ref(false)
 
 const rules = reactive({
   username: [
@@ -69,9 +116,10 @@ const rules = reactive({
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, message: '密码长度需要超过6位', trigger: 'blur' },
   ],
   repetPassword: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
+    { required: true, message: '请再次输入密码', trigger: 'blur' },
   ],
 })
 
@@ -116,6 +164,26 @@ const onSubmit = async (formEl: any) => {
   })
 }
 
+let time: any = null
+
+const send = () => {
+  if (!isSend.value) {
+    isSend.value = true
+
+    if (time) {
+      return
+    } else {
+      time = setInterval(() => {
+        Localtime.value = Localtime.value - 1
+        if (Localtime.value === 0) {
+          isSend.value = false
+          clearInterval(time)
+        }
+      }, 1000);
+    }
+  }
+}
+
 </script>
 <style>
 .login-box {
@@ -153,5 +221,22 @@ const onSubmit = async (formEl: any) => {
     }
 
   }
+}
+
+.forgetPassword {
+  float: right;
+  font-size: 12px;
+  cursor: pointer;
+  padding-top: 10px;
+  padding-left: 10px;
+
+  :hover {
+    color: rgb(0, 162, 255);
+  }
+}
+
+.appendButton {
+  cursor: pointer;
+  color: rgb(0, 162, 255);
 }
 </style>

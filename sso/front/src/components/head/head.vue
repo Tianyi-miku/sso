@@ -22,12 +22,10 @@ const router = useRouter()
 const loginOut = () => {
   let token = GetLocalItem('token')
   if (token) {
-    loginout(token).then((res: any) => {
-      if (res) {
-        RemoveLocalItem('token')
-        store.commit('setToken', '')
-        router.push({ path: '/login' })
-      }
+    loginout(token).finally(() => {
+      RemoveLocalItem('token')
+      store.commit('setToken', '')
+      router.push({ path: '/login' })
     })
   }
 
