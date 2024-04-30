@@ -33,6 +33,7 @@ export class LoginService {
       })
       if (!Iuser) {
         let { id, roleId, clientCode, ...user } = response.data
+ 
         await prisma.user.create({
           data: user
         })

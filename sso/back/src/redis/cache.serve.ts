@@ -9,7 +9,7 @@ export class CacheService {
     if (ttl) {
       return this.redisClient.set(key, JSON.stringify(value), 'EX', ttl);
     }
-    return this.redisClient.set(key, JSON.stringify(value));
+    return this.redisClient.set(key, JSON.stringify(value), 'EX', 86400);
   }
 
   async get(key: string) {
